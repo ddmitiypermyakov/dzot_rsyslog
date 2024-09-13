@@ -1,0 +1,36 @@
+---
+- hosts: log
+  become: yes
+  tasks:
+    - name: change line rsyslog
+       lineinfile:
+          path: /etc/rsyslog.conf
+          regexp: '\s+#module(load="imudp")\s+\S+'
+          line: module(load="imudp")
+    - name: change line rsyslog2
+       lineinfile:
+          path: /etc/rsyslog.conf
+          regexp: '\s+#input(type="imudp" port="514")\s+\S+'
+          line: input(type="imudp" port="514")
+    - name: change line rsyslog tcp
+       lineinfile:
+          path: /etc/rsyslog.conf
+          regexp: '\s+#module(load="imtcp")\s+\S+'
+          line: module(load="imtcp")
+    - name: change line rsyslog2 tcp
+       lineinfile:
+          path: /etc/rsyslog.conf
+          regexp: '\s+#input(type="imudp" port="514")\s+\S+'
+          line: input(type="imtcp" port="514")
+    - name: change line rsyslog2 tcp
+       lineinfile:
+          path: /etc/rsyslog.conf
+          regexp: '\s+#input(type="imudp" port="514")\s+\S+'
+          line: input(type="imtcp" port="514")
+    - name: add a line
+       lineinfile:
+          path: /etc/rsyslog.conf
+          regexp: '\s+$IncludeConfig\s+\S+'
+          insertafter: '^#IncludeConfig'
+          line: $template RemoteLogs, "/var/log/rsyslog/%HOSTNAME%/%PROGRAMNAME%.log"\n*.* ?RemoteLogs\n& ~
+          state: present

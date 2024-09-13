@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Install nginx
+      apt:
+        update_cache: yes
+        name: nginx
+        state: latest
+      when:
+        ansible_os_family == "Debian"
+      notify: reload nginx
+        #nginx: systemd
+#    - name: create a new file with lineinfile
+#      lineinfile: 
+#        dest: /home/test.conf
+#        regexp: '^'
+#        line: ''
+#        state: present
+#        create: True      
+    - name: change line nginx
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '\s+access_log\s+\S+'
+        line: acces_log syslog:server=192.168.57.11:514,tag=nginx_access,severity=info combined;
+  handlers:
+    - name: reload nginx
+      service:
+        name: nginx
+        state: reloaded
