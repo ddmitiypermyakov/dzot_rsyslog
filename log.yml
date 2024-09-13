@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Обновление и установка пакетов
+      apt:
+        update_cache: yes
+        name: nginx
+        state: present
